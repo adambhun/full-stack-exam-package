@@ -1,11 +1,19 @@
 {
   "name": "full-stack_exam",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Hopeful first attempt at creating packages to gain some edge in a full-stack beginner exam. Contains specific back-end and front-end material whoch can help on the exam.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Adam Pisky-Nagy",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^11.11.3",
+    "dotenv": "^7.0.0",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mysql": "^2.16.0",
+    "tape": "^4.10.1"
+  }
 }

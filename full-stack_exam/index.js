@@ -32,7 +32,8 @@ var MySQL = /** @class */ (function () {
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             password: process.env.DB_PW,
-            database: process.env.DB_NAME
+            database: process.env.DB_NAME,
+            rowsData: undefined
         });
     }
     MySQL.prototype.connect = function () {
@@ -55,7 +56,7 @@ var MySQL = /** @class */ (function () {
         var _this = this;
         this.db.query("SELECT " + column.join(',') + " FROM " + table, function (error, rows) {
             _this.errorHandling(error, response);
-            response.status(200).json(rows);
+            _this.db.rowsData = rows;
         });
     };
     ;

@@ -1,6 +1,6 @@
 {
   "name": "full-stack_exam",
-  "version": "0.4.5",
+  "version": "0.5.7",
   "description": "Hopeful first attempt at creating packages to gain some edge in a full-stack beginner exam. Contains specific back-end and front-end material whoch can help on the exam.",
   "main": "index.js",
   "scripts": {

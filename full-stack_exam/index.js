@@ -46,7 +46,7 @@ function HeaderSettings() {
         };
 }
 ;
-exports.HeaderSettings; /* = HeaderSet */
+exports.HeadSetter = HeaderSettings;
 /* Exposing MySQL DB initializer, connector, error handler and queries*/
 var MySqlPlus = /** @class */ (function () {
     function MySqlPlus(dbName) {
@@ -110,7 +110,7 @@ var MySqlPlus = /** @class */ (function () {
         });
     };
     ;
-    MySqlPlus.prototype["delete"] = function (response, targetTable, columnToFilter, statementToFilter) {
+    MySqlPlus.prototype.deleteRows = function (response, targetTable, columnToFilter, statementToFilter) {
         var _this = this;
         this.db.query("DELETE FROM " + targetTable + " WHERE " + columnToFilter + " = \"" + statementToFilter + "\";", function (error, okPacket) {
             _this.errorHandling(error, response);
@@ -124,18 +124,12 @@ var MySqlPlus = /** @class */ (function () {
         for (var _i = 6; _i < arguments.length; _i++) {
             columnsToReceive[_i - 6] = arguments[_i];
         }
-        this.db.query("UPDATE " + targetTable + " SET " + columnToUpdate + " = " + newValueOrExpression + "\n      WHERE " + columnToFilter + " = " + statementToFilter + ";", function (error, okPacket) {
-            _this.okPacket = okPacket;
+        this.db.query("UPDATE " + targetTable + " SET " + columnToUpdate + " = \"" + newValueOrExpression + "\"\n      WHERE " + columnToFilter + " = " + statementToFilter + ";", function (error, okPacket) {
             _this.errorHandling(error, response);
-            _this.okPacket !== undefined ?
-                _this.db.query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = \"" + _this.dbName + "\" \n      AND TABLE_NAME = \"" + targetTable + "\" AND EXTRA = \"auto_increment\";", function (error, rows) {
-                    _this.errorHandling(error, response);
-                    _this.uniqueID = rows[0].COLUMN_NAME;
-                    _this.db.query("SELECT " + columnsToReceive.join(',') + " FROM " + targetTable + " \n      WHERE " + _this.uniqueID + " = " + _this.okPacket.insertId + ";", function (error, rows) {
-                        _this.errorHandling(error, response);
-                        response.status(200).json(rows);
-                    });
-                }) : null;
+            _this.db.query("SELECT " + columnsToReceive.join(',') + " FROM " + targetTable + " \n      WHERE " + columnToUpdate + " = \"" + newValueOrExpression + "\";", function (error, rows) {
+                _this.errorHandling(error, response);
+                response.status(200).json(rows);
+            });
         });
     };
     ;
@@ -149,10 +143,9 @@ var MySqlPlus = /** @class */ (function () {
                 _this.db.query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = \"" + _this.dbName + "\" \n      AND TABLE_NAME = \"" + targetTable + "\" AND EXTRA = \"auto_increment\";", function (error, rows) {
                     _this.errorHandling(error, response);
                     _this.uniqueID = rows[0].COLUMN_NAME;
-                    _this.db.query("UPDATE " + targetTable + " SET " + columnToUpdate + " = " + newValueOrExpression + "\n      WHERE " + columnToFilter + " = " + statementToFilter + ";", function (error, okPacket) {
-                        _this.okPacket = okPacket;
+                    _this.db.query("UPDATE " + targetTable + " SET " + columnToUpdate + " = \"" + newValueOrExpression + "\"\n      WHERE " + columnToFilter + " = " + statementToFilter + ";", function (error, okPacket) {
                         _this.errorHandling(error, response);
-                        _this.db.query("SELECT " + columnsToReceive.join(',') + " FROM " + targetTable + " \n      WHERE " + _this.uniqueID + " = " + _this.okPacket.insertId + ";", function (error, rows) {
+                        _this.db.query("SELECT " + columnsToReceive.join(',') + " FROM " + targetTable + " \n      WHERE " + _this.uniqueID + " = \"" + _this.okPacket.insertId + "\";", function (error, rows) {
                             _this.errorHandling(error, response);
                             response.status(200).json(rows);
                         });
@@ -161,22 +154,16 @@ var MySqlPlus = /** @class */ (function () {
         });
     };
     ;
-    MySqlPlus.prototype.deleteAndUpdate = function (response, targetTable, columnToFilter, statementToFilter, columnToUpdate, newValueOrExpression, columnsToReceive) {
+    MySqlPlus.prototype.deleteAndUpdate = function (response, targetTable, columnToFilter, statementToFilter, columnToUpdate, newValueOrExpression, columnToFilterOnUpdate, statementToFilterOnUpdate, columnsToReceive) {
         var _this = this;
         this.db.query("DELETE FROM " + targetTable + " WHERE " + columnToFilter + " = \"" + statementToFilter + "\";", function (error, okPacket) {
             _this.errorHandling(error, response);
-            _this.db.query("UPDATE " + targetTable + " SET " + columnToUpdate + " = " + newValueOrExpression + "\n      WHERE " + columnToFilter + " = " + statementToFilter + ";", function (error, okPacket) {
-                _this.okPacket = okPacket;
+            _this.db.query("UPDATE " + targetTable + " SET " + columnToUpdate + " = \"" + newValueOrExpression + "\"\n      WHERE " + columnToFilterOnUpdate + " = " + statementToFilterOnUpdate + ";", function (error, okPacket) {
                 _this.errorHandling(error, response);
-                _this.okPacket !== undefined ?
-                    _this.db.query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = \"" + _this.dbName + "\" \n      AND TABLE_NAME = \"" + targetTable + "\" AND EXTRA = \"auto_increment\";", function (error, rows) {
-                        _this.errorHandling(error, response);
-                        _this.uniqueID = rows[0].COLUMN_NAME;
-                        _this.db.query("SELECT " + columnsToReceive.join(',') + " FROM " + targetTable + " \n      WHERE " + _this.uniqueID + " = " + _this.okPacket.insertId + ";", function (error, rows) {
-                            _this.errorHandling(error, response);
-                            response.status(200).json(rows);
-                        });
-                    }) : null;
+                _this.db.query("SELECT " + columnsToReceive.join(',') + " FROM " + targetTable + " \n      WHERE " + columnToFilterOnUpdate + " = \"" + statementToFilterOnUpdate + "\";", function (error, rows) {
+                    _this.errorHandling(error, response);
+                    response.status(200).json(rows);
+                });
             });
         });
     };
@@ -184,4 +171,4 @@ var MySqlPlus = /** @class */ (function () {
     return MySqlPlus;
 }());
 ;
-exports.MySqlPlus; /* = MySQL */
+exports.MySqlPlus = MySqlPlus;

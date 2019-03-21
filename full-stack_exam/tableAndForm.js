@@ -9,14 +9,16 @@ function getData() {
     let payload = JSON.parse(http.responseText);
     //delete column
     payload.forEach(element => {
-      delete element.id;      
-    });  
+      delete element.id;
+    });
 
-    //parameters: form method and action
-    headAndForm(getHeaders(payload[0]), 'POST', '/add');
+    //gets headers from object keys
+    createHeaders(getHeaders(payload[0]));
     fillTable(payload);
+    //set method and action
+    createForm(getHeaders(payload[0]), 'POST', '/add');
+    //id of buttons top to bottom: one to payload.length
     //parameter: set type of button
-    //id of buttons one to payload.length top to bottom
     buttonColumn(payload, "button");
   }
   http.send();
@@ -29,26 +31,30 @@ function getHeaders(data) {
     headers.push(key.charAt(0).toUpperCase() + key.replace('_', ' ').slice(1));
   }
   for (let index = 0; index < headers.length; index++) {
-      headers[index] = headers[index].replace('Attr name', 'Name');
+    headers[index] = headers[index].replace('Attr name', 'Name');
   }
   return headers;
 }
 
-function headAndForm(data, method, action) {
+function createHeaders(data) {
   let table = document.createElement('table');
   document.querySelector('body').appendChild(table);
   let tr = document.createElement('tr');
   table.appendChild(tr);
 
+  for (let index = 0; index < data.length; index++) {
+    let th = document.createElement('th');
+    th.innerHTML = data[index];
+    tr.appendChild(th);
+  }
+}
+
+function createForm(data, method, action) {
   let form = document.createElement('form');
   form.setAttribute('method', method);
   form.setAttribute('action', action);
   document.querySelector('body').appendChild(form);
   for (let index = 0; index < data.length; index++) {
-    let th = document.createElement('th');
-    th.innerHTML = data[index];
-    tr.appendChild(th);
-
     let label = document.createElement('label');
     label.innerHTML = data[index] + ': ';
     label.setAttribute('for', data[index]);
@@ -58,7 +64,6 @@ function headAndForm(data, method, action) {
     input.setAttribute('value', '');
     input.setAttribute('required', true);
     let br = document.createElement('br');
-
     form.appendChild(label);
     form.appendChild(input);
     form.appendChild(br);

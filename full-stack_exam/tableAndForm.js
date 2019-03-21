@@ -97,5 +97,3 @@ function buttonColumn(data, type) {
     row.appendChild(td);
   }
 }
-
-window.addEventListener('load', getData);
